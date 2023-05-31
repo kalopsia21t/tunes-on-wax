@@ -1,6 +1,6 @@
 "use client";
-import { useMemo } from "react";
-import { useTable } from "react-table";
+import { useCallback, useMemo } from "react";
+import { useTable, useSortBy } from "react-table";
 import styles from "./Table.module.css";
 
 import dataMap from "./data";
@@ -28,21 +28,27 @@ export default function Table() {
     ];
   }, []);
 
-  const tableInstance = useTable({ columns, data });
-
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    tableInstance;
+    useTable({ columns, data }, useSortBy);
 
   return (
     <table {...getTableProps()} className={styles.table}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()} className={styles.header}>
-                {column.render("Header")}
-              </th>
-            ))}
+            {headerGroup.headers.map((column) => {
+              const { key, ...rest } = column.getHeaderProps(
+                column.getSortByToggleProps()
+              );
+              return (
+                <th key={key} {...rest} className={styles.header}>
+                  {column.render("Header")}
+                  <span>
+                    {column.isSorted ? (column.isSortedDesc ? "-" : "+") : ""}
+                  </span>
+                </th>
+              );
+            })}
           </tr>
         ))}
       </thead>
@@ -50,13 +56,19 @@ export default function Table() {
       <tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
+          const { key, ...rest } = row.getRowProps();
+
           return (
-            <tr {...row.getRowProps()} className={styles.row}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()} className={styles.cell}>
-                  {cell.render("Cell")}
-                </td>
-              ))}
+            <tr key={key} {...rest} className={styles.row}>
+              {row.cells.map((cell) => {
+                const { key, ...rest } = cell.getCellProps();
+
+                return (
+                  <td key={key} {...rest} className={styles.cell}>
+                    {cell.render("Cell")}
+                  </td>
+                );
+              })}
             </tr>
           );
         })}

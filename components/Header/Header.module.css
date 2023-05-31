@@ -8,5 +8,14 @@
   height: 144px;
   width: 100%;
   border: 1px solid white;
-  padding: 3em;
+  background-color: black;
+  padding: 1em;
+  overflow: hidden;
+}
+
+.navBtn {
+  width: 5em;
+  height: 5em;
+  background: transparent;
+  border: 1px solid white;
 }

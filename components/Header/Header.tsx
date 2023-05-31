@@ -1,14 +1,15 @@
+"use client";
+
 import styles from "./Header.module.css";
-import Link from "next/link";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export default function Header() {
   return (
     <header className={styles.container}>
       <h1>Tunes on Wax</h1>
-      <nav>
-        <Link href={"/"}>Home</Link>
-        <Link href={"/discovery"}>Discover records</Link>
-      </nav>
+      <button type="button" className={styles.navBtn}>
+        <MenuIcon />
+      </button>
     </header>
   );
 }
